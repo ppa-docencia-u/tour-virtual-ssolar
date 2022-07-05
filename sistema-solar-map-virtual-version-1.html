@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="icon" href="favicon.png">
+   
+</head>
+<body onload="cambiaTam()" onresize="cambiaTam()">
+
+    <h2>El sistema solar</h2>
+
+    <p>Click en objetos de interés:</p>
+
+    <picture>
+        <source media="(max-width: 414px)" srcset="./solar_sys414.jpeg" >
+        <source media="(max-width: 640px)" srcset="./solar_sys640.jpeg">
+        <source media="(max-width: 800px)" srcset="./solar_sys800.jpeg">
+        <source media="(max-width: 1024px)" srcset="./solar_sys1024.jpeg">
+        <img src="./solar_sys.jpg" data-img-res="12" usemap="#sistema-solar">
+    </picture>
+    
+    <!--
+        shape="rect" coords="X_ti,Y_ti, X_br,Y_br" ej: "34, 44, 270, 350"
+        shape="circle" coords="X,Y,r" ej: "350,250,44"
+        shape="poly" coords="X1,Y1,  ...... Xn,Yn"
+    -->
+
+    <map id="map-area" name="sistema-solar"></map>
+    
+    <div id="mas-info" style="display: none;">
+        <iframe src="https://es.wikipedia.org/wiki/Sistema_solar" width="50%" height="100" style="border:1px solid black;">
+        </iframe>
+    </div>
+
+
+    <script>
+        function funcPlaneta(lugar) {
+                //Para información del área seleccionada
+                //iframe para presentar nueva info de manera inner
+                var lugarClick = lugar.getAttribute("data-obj-selec");
+                var masInfo = document.getElementById("mas-info");
+                
+                alert("Has seleccionado " + lugarClick);
+
+                if (masInfo.style.display === 'block') {
+                    masInfo.style.display = 'none';
+                } else {
+                    masInfo.style.display = 'block';
+                }
+
+                //alert("Has seleccionado " + lugarClick);
+            }
+        function cambiaTam(){
+            nuevoT = window.innerWidth;
+            //window.innerHeight;
+            /*
+            The window.screen object can be written without the window prefix.
+            Properties:
+                screen.width
+                screen.height
+                screen.availWidth
+                screen.availHeight
+                screen.colorDepth
+                screen.pixelDepth
+            */ 
+
+            const elementoMap = document.getElementById("map-area");
+            while(elementoMap.hasChildNodes()){
+                elementoMap.removeChild(elementoMap.firstChild);
+            }
+
+            let lstObjs = ["Sol", "Mercurio", "Venus", "Tierra", "Marte", "Jupiter", "Saturno", "Urano", "Neptuno", "Cometa"];
+            var lstCoor;
+
+            if (nuevoT > 1024) {
+                lstCoor = ["751,384,100", "915,486,100", "1008,449,50", "1094,401,50", "1189,333,50", "470,163,50", "356,114,50", "268,90,50", "199,73,50", "27,321,179,370"];
+            } else if (nuevoT > 800) {
+                lstCoor = ["601,326,100", "702,402,100", "806,372,50", "875,332,50", "950,277,50", "376,140,50", "282,98,50", "213,83,50", "158,70,50", "20,265,140,306"];
+            } else if (nuevoT > 640) {
+                lstCoor = ["470,234,100", "571,300,50", "631,277,50", "682,248,50", "741,204,50", "232,88,50", "220,66,50", "166,53,50", "122,43,50", "20,192,110,230"];
+            } else if (nuevoT > 414) {
+                lstCoor = ["377,200,100", "504,232,50", "325,150,50", "546,208,50", "594,174,50", "232,88,50", "176,64,50", "134,53,50", "100,46,50", "17,163,88,195"];
+            } else {
+                lstCoor = ["245,129,100", "294,161,50", "325,150,50", "350,136,50", "382,111,50", "150,57,50", "114,40,50", "88,35,50", "67,29,50", "20,100,59,125"];
+            }
+
+            lstCoor.forEach((valor, i) => {
+                var forma = "circle";
+                if (valor.split(',').length > 3){
+                    forma = "rect";
+                }
+                var elemArea = document.createElement("area");
+                elemArea.setAttribute("id", "obj" + (i + 1).toString());
+                elemArea.setAttribute("shape", forma);
+                elemArea.setAttribute("coords", valor);
+                elemArea.setAttribute("data-obj-selec", lstObjs[i]);
+                elemArea.setAttribute("onclick", "funcPlaneta(this)");
+
+                elementoMap.appendChild(elemArea);
+                //elementoMap.insertAdjacentElement("beforeend", elemArea);
+            });
+            //alert(areaString);
+        }
+    </script>
+
+</body>
+
+</html>
